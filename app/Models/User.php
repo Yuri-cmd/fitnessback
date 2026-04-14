@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Routine::class);
     }
+
+    public function goals()
+    {
+        return $this->hasMany(Goal::class);
+    }
 }
