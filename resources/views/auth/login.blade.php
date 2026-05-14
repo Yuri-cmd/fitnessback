@@ -6,8 +6,10 @@
     <title>Iniciar sesión · POWER STACK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
     <style>
         body { font-family: system-ui, -apple-system, sans-serif; }
+        [x-cloak] { display: none !important; }
         .form-input {
             width: 100%; border: 1px solid #e5e7eb; border-radius: 12px;
             padding: 13px 16px; font-size: 14px; color: #121212;
@@ -16,7 +18,7 @@
         .form-input:focus { border-color: #A1CD35; box-shadow: 0 0 0 3px rgba(161,205,53,0.12); }
     </style>
 </head>
-<body class="bg-[#F8F9FA] min-h-screen flex items-center justify-center p-4">
+<body class="bg-[#F8F9FA] min-h-screen flex items-center justify-center p-4" x-data="{ showPass: false }">
 
 <div class="w-full max-w-4xl flex bg-white rounded-3xl shadow-xl overflow-hidden min-h-[560px]">
 
@@ -90,9 +92,15 @@
 
             <div>
                 <label class="block text-xs font-bold text-[#616161] tracking-wider mb-2">CONTRASEÑA</label>
-                <input type="password" name="password"
-                       class="form-input"
-                       placeholder="••••••••" required>
+                <div class="relative">
+                    <input :type="showPass ? 'text' : 'password'" name="password"
+                           class="form-input pr-12"
+                           placeholder="••••••••" required>
+                    <button type="button" @click="showPass = !showPass"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#A1CD35] transition-colors">
+                        <i class="fa-solid" :class="showPass ? 'fa-eye-slash' : 'fa-eye'"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="flex items-center gap-2">
