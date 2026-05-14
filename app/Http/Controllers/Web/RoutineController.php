@@ -48,8 +48,12 @@ class RoutineController extends Controller
         $routine  = Auth::user()->routines()->create(['name' => $request->name]);
         $syncData = [];
 
-        foreach ($request->exercises as $ex) {
-            $syncData[$ex['exercise_id']] = ['sets' => $ex['sets'], 'reps' => $ex['reps']];
+        foreach ($request->exercises as $index => $ex) {
+            $syncData[$ex['exercise_id']] = [
+                'sets' => $ex['sets'], 
+                'reps' => $ex['reps'],
+                'sort_order' => $index
+            ];
         }
 
         $routine->exercises()->sync($syncData);
@@ -82,8 +86,12 @@ class RoutineController extends Controller
         $routine->update(['name' => $request->name]);
 
         $syncData = [];
-        foreach ($request->exercises as $ex) {
-            $syncData[$ex['exercise_id']] = ['sets' => $ex['sets'], 'reps' => $ex['reps']];
+        foreach ($request->exercises as $index => $ex) {
+            $syncData[$ex['exercise_id']] = [
+                'sets' => $ex['sets'], 
+                'reps' => $ex['reps'],
+                'sort_order' => $index
+            ];
         }
         $routine->exercises()->sync($syncData);
 
@@ -177,7 +185,7 @@ class RoutineController extends Controller
         $routine  = Auth::user()->routines()->create(['name' => $request->name]);
         $syncData = [];
 
-        foreach ($request->exercises as $ex) {
+        foreach ($request->exercises as $index => $ex) {
             $exercise = ExerciseBase::firstOrCreate(
                 ['name' => trim($ex['name'])],
                 ['muscle_group' => 'Otro']
@@ -186,7 +194,11 @@ class RoutineController extends Controller
             if (isset($syncData[$exercise->id])) {
                 $syncData[$exercise->id]['sets'] += (int) $ex['sets'];
             } else {
-                $syncData[$exercise->id] = ['sets' => (int) $ex['sets'], 'reps' => (int) $ex['reps']];
+                $syncData[$exercise->id] = [
+                    'sets'       => (int) $ex['sets'], 
+                    'reps'       => (int) $ex['reps'],
+                    'sort_order' => $index
+                ];
             }
         }
 

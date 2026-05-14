@@ -12,6 +12,7 @@ class Routine extends Model
     public function exercises(): BelongsToMany
     {
         return $this->belongsToMany(ExerciseBase::class, 'routine_exercise', 'routine_id', 'exercise_id')
-                    ->withPivot(['sets', 'reps']);
+                    ->withPivot(['sets', 'reps', 'sort_order'])
+                    ->orderBy('routine_exercise.sort_order');
     }
 }

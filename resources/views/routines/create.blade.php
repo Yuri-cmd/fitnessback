@@ -3,6 +3,9 @@
 @section('title', isset($routine) ? 'Editar rutina · POWER STACK' : 'Nueva rutina · POWER STACK')
 
 @section('content')
+@push('head')
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+@endpush
 <div class="max-w-2xl mx-auto space-y-6"
      x-data="routineBuilder()"
      x-init="init()">
@@ -55,16 +58,23 @@
             @enderror
 
             {{-- Filas de ejercicios --}}
-            <div class="space-y-3" x-show="selected.length > 0">
-                <template x-for="(item, index) in selected" :key="index">
-                    <div class="flex gap-2 items-start p-3 rounded-xl border border-gray-100 bg-gray-50">
+            {{-- Filas de ejercicios --}}
+            <div class="space-y-3" x-show="selected.length > 0" x-ref="sortableContainer">
+                <template x-for="(item, index) in selected" :key="item._uid">
+                    <div class="flex gap-2 items-start p-3 rounded-xl border border-gray-100 bg-gray-50 group shadow-sm transition-all">
+                        
+                        {{-- Manija de arrastre --}}
+                        <div class="drag-handle cursor-grab active:cursor-grabbing p-2 mt-0.5 text-gray-300 hover:text-gray-500 transition-colors">
+                            <i class="fa-solid fa-grip-vertical"></i>
+                        </div>
+
                         {{-- Número --}}
-                        <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold"
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-2 text-xs font-bold"
                              style="background:#A1CD35; color:#121212;"
                              x-text="index + 1"></div>
 
                         {{-- Select ejercicio --}}
-                        <div class="flex-1 min-w-0">
+                        <div class="flex-1 min-w-0 mt-1">
                             <select @change="item.exercise_id = $event.target.value"
                                     class="form-input text-sm py-2 px-3">
                                 <option value="">-- Selecciona ejercicio --</option>
@@ -77,25 +87,25 @@
                         </div>
 
                         {{-- Sets --}}
-                        <div class="w-16 flex-shrink-0">
+                        <div class="w-16 flex-shrink-0 mt-1">
                             <input type="number" x-model="item.sets" min="1" max="99"
-                                   class="form-input text-sm py-2 px-2 text-center"
+                                   class="form-input text-sm py-2 px-2 text-center font-bold"
                                    placeholder="Sets">
-                            <p class="text-[10px] text-center text-[#616161] mt-0.5">SERIES</p>
+                            <p class="text-[9px] text-center text-[#616161] mt-0.5 font-bold uppercase tracking-tighter">Series</p>
                         </div>
 
                         {{-- Reps --}}
-                        <div class="w-16 flex-shrink-0">
+                        <div class="w-16 flex-shrink-0 mt-1">
                             <input type="number" x-model="item.reps" min="1" max="999"
-                                   class="form-input text-sm py-2 px-2 text-center"
+                                   class="form-input text-sm py-2 px-2 text-center font-bold"
                                    placeholder="Reps">
-                            <p class="text-[10px] text-center text-[#616161] mt-0.5">REPS</p>
+                            <p class="text-[9px] text-center text-[#616161] mt-0.5 font-bold uppercase tracking-tighter">Reps</p>
                         </div>
 
                         {{-- Eliminar --}}
                         <button type="button" @click="remove(index)"
-                                class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-red-50 text-red-400 transition-colors flex-shrink-0 mt-0.5">
-                            <i class="fa-solid fa-xmark text-xs"></i>
+                                class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-red-50 text-red-400 transition-colors flex-shrink-0 mt-2">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
                     </div>
                 </template>
@@ -165,6 +175,7 @@ function routineBuilder() {
 
     // exercise_id como string para que coincida con el value del DOM
     const preSelected = _preSelected.map(s => ({
+        _uid: Math.random().toString(36).substr(2, 9),
         exercise_id: String(s.exercise_id),
         sets: s.sets,
         reps: s.reps,
@@ -175,12 +186,30 @@ function routineBuilder() {
         allExercises:   _exercises,
         exerciseGroups,
 
-        init() { /* grupos ya listos */ },
-
-        add() {
-            this.selected.push({ exercise_id: '', sets: 3, reps: 12 });
+        init() {
+            this.$nextTick(() => {
+                new Sortable(this.$refs.sortableContainer, {
+                    handle: '.drag-handle',
+                    animation: 200,
+                    ghostClass: 'opacity-40',
+                    onEnd: (evt) => {
+                        const items = [...this.selected];
+                        const element = items.splice(evt.oldIndex, 1)[0];
+                        items.splice(evt.newIndex, 0, element);
+                        this.selected = items;
+                    }
+                });
+            });
         },
 
+        add() {
+            this.selected.push({ 
+                _uid: Math.random().toString(36).substr(2, 9), 
+                exercise_id: '', 
+                sets: 3, 
+                reps: 12 
+            });
+        },
 
         remove(index) {
             this.selected.splice(index, 1);
