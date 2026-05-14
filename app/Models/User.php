@@ -74,4 +74,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Goal::class);
     }
+
+    public function waterLogs()
+    {
+        return $this->hasMany(WaterLog::class);
+    }
+
+    public function achievements()
+    {
+        return $this->belongsToMany(Achievement::class)->withPivot('earned_at')->withTimestamps();
+    }
 }

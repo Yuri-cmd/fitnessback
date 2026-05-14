@@ -4,7 +4,9 @@ use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\GoalController;
 use App\Http\Controllers\Web\RoutineController;
+use App\Http\Controllers\Web\StatsController;
 use App\Http\Controllers\Web\WeightController;
+use App\Http\Controllers\Web\WikiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect('/dashboard'));
@@ -42,6 +44,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/goals', [GoalController::class, 'index'])->name('goals.index');
     Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
     Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
+
+    Route::get('/stats', [StatsController::class, 'index'])->name('stats.index');
+    Route::get('/wiki', [WikiController::class, 'index'])->name('wiki.index');
+    Route::get('/wiki/{exercise}', [WikiController::class, 'show'])->name('wiki.show');
+
+    Route::post('/water', [DashboardController::class, 'logWater'])->name('water.store');
 
     Route::get('/exercises-json', [RoutineController::class, 'exercises'])->name('exercises.json');
 });

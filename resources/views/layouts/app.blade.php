@@ -158,6 +158,16 @@
                 <i class="fa-solid fa-chart-line icon"></i>
                 Progreso Fuerza
             </a>
+            <a href="{{ route('stats.index') }}"
+               class="nav-link {{ request()->routeIs('stats.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-chart-pie icon"></i>
+                Estadísticas
+            </a>
+            <a href="{{ route('wiki.index') }}"
+               class="nav-link {{ request()->routeIs('wiki.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-book-bookmark icon"></i>
+                Wiki Ejercicios
+            </a>
         </nav>
 
         {{-- User --}}
