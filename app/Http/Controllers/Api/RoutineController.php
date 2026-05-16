@@ -45,10 +45,25 @@ class RoutineController extends Controller
         }
 
         $log = RoutineLog::create([
-            'user_id' => $request->user()->id,
-            'routine_id' => $routine->id,
+            'user_id'      => $request->user()->id,
+            'routine_id'   => $routine->id,
             'completed_at' => now(),
         ]);
+
+        if ($request->has('sets') && is_array($request->sets)) {
+            foreach ($request->sets as $set) {
+                if (! isset($set['exercise_id'])) continue;
+                \App\Models\WorkoutSetLog::create([
+                    'user_id'        => $request->user()->id,
+                    'routine_log_id' => $log->id,
+                    'exercise_id'    => $set['exercise_id'],
+                    'set_number'     => $set['set_number'] ?? 1,
+                    'reps_done'      => $set['reps_done'] ?? 0,
+                    'weight_kg'      => $set['weight_kg'] ?? 0,
+                    'logged_at'      => now(),
+                ]);
+            }
+        }
 
         return response()->json($log);
     }

@@ -1,14 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\AchievementController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ExerciseController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\WeightController;
 use App\Http\Controllers\Api\RoutineController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\StatsController;
+use App\Http\Controllers\Api\WaterLogController;
+use App\Http\Controllers\Api\WeightController;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Api\ExerciseController;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -38,4 +39,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/goals', [GoalController::class, 'store']);
     Route::put('/goals/{goal}', [GoalController::class, 'update']);
     Route::delete('/goals/{goal}', [GoalController::class, 'destroy']);
+
+    // Hidratación
+    Route::get('/water-logs', [WaterLogController::class, 'index']);
+    Route::post('/water-logs', [WaterLogController::class, 'store']);
+
+    // Logros
+    Route::get('/achievements', [AchievementController::class, 'index']);
+
+    // Estadísticas
+    Route::prefix('stats')->group(function () {
+        Route::get('/weight-history', [StatsController::class, 'weightHistory']);
+        Route::get('/volume-by-muscle', [StatsController::class, 'volumeByMuscle']);
+        Route::get('/activity-heatmap', [StatsController::class, 'activityHeatmap']);
+        Route::get('/personal-records', [StatsController::class, 'personalRecords']);
+    });
 });
