@@ -168,6 +168,11 @@
                 <i class="fa-solid fa-book-bookmark icon"></i>
                 Wiki Ejercicios
             </a>
+            <a href="{{ route('support') }}"
+               class="nav-link {{ request()->routeIs('support') ? 'active' : '' }}">
+                <i class="fa-solid fa-headset icon"></i>
+                Soporte
+            </a>
         </nav>
 
         {{-- User --}}
