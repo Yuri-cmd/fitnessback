@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AchievementController;
+use App\Http\Controllers\Api\BodyMeasurementController;
+use App\Http\Controllers\Api\VersionController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExerciseController;
 use App\Http\Controllers\Api\GoalController;
@@ -10,6 +12,8 @@ use App\Http\Controllers\Api\StatsController;
 use App\Http\Controllers\Api\WaterLogController;
 use App\Http\Controllers\Api\WeightController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/version', [VersionController::class, 'check']);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -46,6 +50,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Logros
     Route::get('/achievements', [AchievementController::class, 'index']);
+
+    // Medidas corporales
+    Route::get('/measurements', [BodyMeasurementController::class, 'index']);
+    Route::post('/measurements', [BodyMeasurementController::class, 'store']);
+    Route::delete('/measurements/{bodyMeasurement}', [BodyMeasurementController::class, 'destroy']);
 
     // Estadísticas
     Route::prefix('stats')->group(function () {
