@@ -12,6 +12,18 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', fn () => redirect('/dashboard'));
 Route::get('/privacy', fn () => view('privacy'))->name('privacy');
 
+Route::get('/support', fn () => view('support'))->name('support');
+Route::post('/support', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'name'    => 'required|string|max:100',
+        'email'   => 'required|email',
+        'subject' => 'required|string',
+        'message' => 'required|string|min:10',
+    ]);
+    \Illuminate\Support\Facades\Log::info('Soporte: ' . json_encode($request->only('name','email','subject','message')));
+    return back()->with('support_sent', true);
+})->name('support.send');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -53,18 +65,4 @@ Route::middleware('auth')->group(function () {
     Route::post('/water', [DashboardController::class, 'logWater'])->name('water.store');
 
     Route::get('/exercises-json', [RoutineController::class, 'exercises'])->name('exercises.json');
-
-    Route::get('/support', fn () => view('support'))->name('support');
-    Route::post('/support', function (\Illuminate\Http\Request $request) {
-        $request->validate([
-            'name'    => 'required|string|max:100',
-            'email'   => 'required|email',
-            'subject' => 'required|string',
-            'message' => 'required|string|min:10',
-        ]);
-        // Aquí puedes enviar email con Mail::to(...) en el futuro.
-        // Por ahora guardamos en log para no depender de config SMTP.
-        \Illuminate\Support\Facades\Log::info('Soporte: ' . json_encode($request->only('name','email','subject','message')));
-        return back()->with('support_sent', true);
-    })->name('support.send');
 });
