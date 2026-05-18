@@ -56,4 +56,13 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Sesión cerrada']);
     }
+
+    public function deleteAccount(Request $request)
+    {
+        $user = $request->user();
+        // Revoca todos los tokens antes de eliminar
+        $user->tokens()->delete();
+        $user->delete();
+        return response()->json(['message' => 'Cuenta eliminada']);
+    }
 }

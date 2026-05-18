@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BodyMeasurementController;
 use App\Http\Controllers\Api\VersionController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExerciseController;
+use App\Http\Controllers\Api\FcmTokenController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RoutineController;
@@ -20,6 +21,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::delete('/account', [AuthController::class, 'deleteAccount']);
     
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::post('/profile', [ProfileController::class, 'update']);
@@ -55,6 +57,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/measurements', [BodyMeasurementController::class, 'index']);
     Route::post('/measurements', [BodyMeasurementController::class, 'store']);
     Route::delete('/measurements/{bodyMeasurement}', [BodyMeasurementController::class, 'destroy']);
+
+    // FCM Tokens
+    Route::post('/fcm-token', [FcmTokenController::class, 'store']);
+    Route::delete('/fcm-token', [FcmTokenController::class, 'destroy']);
 
     // Estadísticas
     Route::prefix('stats')->group(function () {

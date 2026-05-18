@@ -84,4 +84,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Achievement::class)->withPivot('earned_at')->withTimestamps();
     }
+
+    public function fcmTokens()
+    {
+        return $this->hasMany(FcmToken::class);
+    }
 }
