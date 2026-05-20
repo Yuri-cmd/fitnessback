@@ -7,10 +7,12 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExerciseController;
 use App\Http\Controllers\Api\FcmTokenController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\NotificationSettingController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RoutineController;
 use App\Http\Controllers\Api\StatsController;
+use App\Http\Controllers\Api\StreakController;
 use App\Http\Controllers\Api\WaterLogController;
 use App\Http\Controllers\Api\WeightController;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +52,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // Hidratación
     Route::get('/water-logs', [WaterLogController::class, 'index']);
     Route::post('/water-logs', [WaterLogController::class, 'store']);
+    Route::delete('/water-logs/last', [WaterLogController::class, 'destroy']);
+
+    // Rachas
+    Route::get('/streaks', [StreakController::class, 'index']);
+
+    // Configuración de notificaciones
+    Route::get('/notification-settings', [NotificationSettingController::class, 'show']);
+    Route::put('/notification-settings', [NotificationSettingController::class, 'update']);
 
     // Logros
     Route::get('/achievements', [AchievementController::class, 'index']);

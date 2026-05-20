@@ -89,4 +89,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(FcmToken::class);
     }
+
+    public function routineLogs()
+    {
+        return $this->hasMany(RoutineLog::class);
+    }
+
+    public function streak()
+    {
+        return $this->hasOne(UserStreak::class);
+    }
+
+    public function notificationSetting()
+    {
+        return $this->hasOne(NotificationSetting::class);
+    }
 }
