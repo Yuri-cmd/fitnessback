@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\VersionController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExerciseController;
 use App\Http\Controllers\Api\FcmTokenController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\GoalController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RoutineController;
@@ -61,6 +62,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // FCM Tokens
     Route::post('/fcm-token', [FcmTokenController::class, 'store']);
     Route::delete('/fcm-token', [FcmTokenController::class, 'destroy']);
+
+    // Notificaciones push (prueba)
+    Route::prefix('notifications')->group(function () {
+        Route::post('/test',         [NotificationController::class, 'test']);
+        Route::post('/broadcast',    [NotificationController::class, 'broadcast']);
+        Route::post('/send-to-user', [NotificationController::class, 'sendToUser']);
+    });
 
     // Estadísticas
     Route::prefix('stats')->group(function () {
