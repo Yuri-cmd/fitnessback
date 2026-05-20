@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\NotificationMessage;
 use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Bus\Queueable;
@@ -20,7 +21,6 @@ class SendWaterReminderJob implements ShouldQueue
         $currentTime = now()->format('H:i');
         $today       = now()->toDateString();
 
-        // Usuarios con recordatorio de agua activo que tienen este horario configurado
         $users = User::query()
             ->whereHas('notificationSetting', function ($q) use ($currentTime) {
                 $q->where('water_reminder_enabled', true)
@@ -38,15 +38,24 @@ class SendWaterReminderJob implements ShouldQueue
                                     ->sum('amount_ml');
                 $glassesLogged = (int) floor($totalMl / 250);
 
-                // No enviar si ya alcanzó la meta
                 if ($glassesLogged >= $goalGlasses) {
                     continue;
                 }
 
                 $remaining = $goalGlasses - $glassesLogged;
-                $body = $glassesLogged === 0
-                    ? "¡Recuerda hidratarte! Tu meta es {$goalGlasses} vasos hoy. 💧"
-                    : "Ya llevas {$glassesLogged}/{$goalGlasses} vasos. ¡Te faltan {$remaining} más! 💧";
+
+                if ($glassesLogged === 0) {
+                    $template = NotificationMessage::random('agua', 'cero_vasos');
+                    $body     = str_replace('{meta}', $goalGlasses, $template?->body
+                        ?? "¡Recuerda hidratarte! Tu meta es {$goalGlasses} vasos hoy. 💧");
+                } else {
+                    $template = NotificationMessage::random('agua', 'progreso');
+                    $body     = str_replace(
+                        ['{vasos}', '{meta}', '{faltan}'],
+                        [$glassesLogged, $goalGlasses, $remaining],
+                        $template?->body ?? "Ya llevas {$glassesLogged}/{$goalGlasses} vasos. ¡Te faltan {$remaining} más! 💧"
+                    );
+                }
 
                 $notifications->sendToUser(
                     $user,

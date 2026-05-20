@@ -15,11 +15,16 @@ class NotificationSettingController extends Controller
             ?? NotificationSetting::firstOrCreate(
                 ['user_id' => $request->user()->id],
                 [
-                    'workout_reminder_enabled' => true,
-                    'workout_reminder_time'    => '20:00',
-                    'water_reminder_enabled'   => true,
-                    'water_reminder_times'     => ['09:00', '13:00', '18:00'],
-                    'water_goal_glasses'       => 8,
+                    'workout_reminder_enabled'     => true,
+                    'workout_reminder_time'        => '20:00',
+                    'water_reminder_enabled'       => true,
+                    'water_reminder_times'         => ['09:00', '13:00', '18:00'],
+                    'water_goal_glasses'           => 8,
+                    'morning_motivation_enabled'   => true,
+                    'morning_motivation_time'      => '07:00',
+                    'evening_motivation_enabled'   => true,
+                    'evening_motivation_time'      => '21:00',
+                    'birthday_notification_enabled' => true,
                 ]
             );
 
@@ -29,12 +34,17 @@ class NotificationSettingController extends Controller
     public function update(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'workout_reminder_enabled' => 'sometimes|boolean',
-            'workout_reminder_time'    => ['sometimes', 'string', 'regex:/^\d{2}:\d{2}$/'],
-            'water_reminder_enabled'   => 'sometimes|boolean',
-            'water_reminder_times'     => 'sometimes|array|min:1|max:6',
-            'water_reminder_times.*'   => ['string', 'regex:/^\d{2}:\d{2}$/'],
-            'water_goal_glasses'       => 'sometimes|integer|min:1|max:20',
+            'workout_reminder_enabled'     => 'sometimes|boolean',
+            'workout_reminder_time'        => ['sometimes', 'string', 'regex:/^\d{2}:\d{2}$/'],
+            'water_reminder_enabled'       => 'sometimes|boolean',
+            'water_reminder_times'         => 'sometimes|array|min:1|max:6',
+            'water_reminder_times.*'       => ['string', 'regex:/^\d{2}:\d{2}$/'],
+            'water_goal_glasses'           => 'sometimes|integer|min:1|max:20',
+            'morning_motivation_enabled'   => 'sometimes|boolean',
+            'morning_motivation_time'      => ['sometimes', 'string', 'regex:/^\d{2}:\d{2}$/'],
+            'evening_motivation_enabled'   => 'sometimes|boolean',
+            'evening_motivation_time'      => ['sometimes', 'string', 'regex:/^\d{2}:\d{2}$/'],
+            'birthday_notification_enabled' => 'sometimes|boolean',
         ]);
 
         $setting = $request->user()->notificationSetting

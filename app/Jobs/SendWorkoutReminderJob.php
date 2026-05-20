@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\NotificationMessage;
 use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Bus\Queueable;
@@ -18,10 +19,8 @@ class SendWorkoutReminderJob implements ShouldQueue
     public function handle(NotificationService $notifications): void
     {
         $currentTime = now()->format('H:i');
+        $today       = now()->toDateString();
 
-        $today = now()->toDateString();
-
-        // Usuarios con recordatorio activo a esta hora que no han entrenado hoy
         $users = User::query()
             ->whereHas('notificationSetting', function ($q) use ($currentTime) {
                 $q->where('workout_reminder_enabled', true)
@@ -36,9 +35,19 @@ class SendWorkoutReminderJob implements ShouldQueue
         foreach ($users as $user) {
             try {
                 $streak = $user->streak?->workout_streak ?? 0;
-                $body = $streak > 0
-                    ? "¡No pierdas tu racha de {$streak} días! Entrena hoy para mantenerla. 💪"
-                    : '¡Es hora de entrenar! Un día más cerca de tus metas. 💪';
+
+                if ($streak > 0) {
+                    $days     = $streak === 1 ? 'día' : 'días';
+                    $template = NotificationMessage::random('recordatorio', 'con_racha');
+                    $body     = str_replace(
+                        ['{racha}', '{dias}'],
+                        [$streak, $days],
+                        $template?->body ?? "¡No pierdas tu racha de {$streak} {$days}! Entrena hoy para mantenerla. 💪"
+                    );
+                } else {
+                    $template = NotificationMessage::random('recordatorio', 'sin_racha');
+                    $body     = $template?->body ?? '¡Es hora de entrenar! Un día más cerca de tus metas. 💪';
+                }
 
                 $notifications->sendToUser(
                     $user,

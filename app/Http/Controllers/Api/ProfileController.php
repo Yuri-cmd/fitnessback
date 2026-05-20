@@ -17,9 +17,12 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'height' => 'nullable|numeric|min:50|max:250',
+            'height'         => 'nullable|numeric|min:50|max:250',
             'current_weight' => 'nullable|numeric|min:20|max:300',
-            'goal_weight' => 'nullable|numeric|min:20|max:300',
+            'goal_weight'    => 'nullable|numeric|min:20|max:300',
+            'birth_date'     => 'nullable|date|before:today',
+            'gender'         => 'nullable|in:male,female',
+            'activity_level' => 'nullable|in:sedentary,lightly_active,moderately_active,very_active,extra_active',
         ]);
 
         $profile = $request->user()->profile;
@@ -28,7 +31,10 @@ class ProfileController extends Controller
             $profile->user_id = $request->user()->id;
         }
 
-        $profile->fill($request->only(['height', 'current_weight', 'goal_weight']));
+        $profile->fill($request->only([
+            'height', 'current_weight', 'goal_weight',
+            'birth_date', 'gender', 'activity_level',
+        ]));
         $profile->save();
 
         return response()->json($profile);
