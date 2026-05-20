@@ -25,5 +25,5 @@ Schedule::job(new UpdateStreaksJob)->dailyAt('00:05')->name('update-streaks');
 Schedule::job(new SendMorningMotivationJob)->everyMinute()->name('morning-motivation');
 Schedule::job(new SendEveningMotivationJob)->everyMinute()->name('evening-motivation');
 
-// Felicitación de cumpleaños, corre una vez al día a las 08:00 UTC
+// Felicitación de cumpleaños a las 08:00 (hora del servidor = Perú)
 Schedule::job(new SendBirthdayGreetingJob)->dailyAt('08:00')->name('birthday-greetings');
