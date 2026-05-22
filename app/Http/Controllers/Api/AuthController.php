@@ -72,7 +72,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
         $user->tokens()->delete();
-        $user->delete();
+        $user->delete(); // soft delete — sets deleted_at, preserves all records
         return response()->json(['message' => 'Cuenta eliminada']);
     }
 }
