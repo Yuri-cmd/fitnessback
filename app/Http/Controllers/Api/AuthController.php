@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -71,6 +72,12 @@ class AuthController extends Controller
     public function deleteAccount(Request $request)
     {
         $user = $request->user();
+        Log::warning('deleteAccount called', [
+            'user_id'    => $user->id,
+            'email'      => $user->email,
+            'ip'         => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
         $user->tokens()->delete();
         $user->delete(); // soft delete — sets deleted_at, preserves all records
         return response()->json(['message' => 'Cuenta eliminada']);
