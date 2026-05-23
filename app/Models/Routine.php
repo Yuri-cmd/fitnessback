@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Routine extends Model
 {
-    protected $fillable = ['name', 'user_id', 'description'];
+    protected $fillable = ['name', 'user_id', 'description', 'archived_at'];
+
+    protected $casts = ['archived_at' => 'datetime'];
 
     public function exercises(): BelongsToMany
     {
         return $this->belongsToMany(ExerciseBase::class, 'routine_exercise', 'routine_id', 'exercise_id')
-                    ->withPivot(['sets', 'reps', 'sort_order'])
+                    ->withPivot(['sets', 'reps', 'reps_max', 'sort_order', 'warmup_sets', 'warmup_reps'])
                     ->orderBy('routine_exercise.sort_order');
     }
 }
