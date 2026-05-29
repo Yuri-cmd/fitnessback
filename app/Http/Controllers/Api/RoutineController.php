@@ -48,19 +48,22 @@ class RoutineController extends Controller
             'exercises.*.reps_max' => 'nullable|integer',
             'exercises.*.warmup_sets' => 'nullable|integer',
             'exercises.*.warmup_reps' => 'nullable|string|max:20',
+            'exercises.*.superset_group' => 'nullable|integer',
         ]);
 
         $routine = $request->user()->routines()->create([
             'name' => $request->name,
         ]);
 
-        foreach ($request->exercises as $ex) {
+        foreach ($request->exercises as $index => $ex) {
             $routine->exercises()->attach($ex['exercise_id'], [
-                'sets'        => $ex['sets'],
-                'reps'        => $ex['reps'],
-                'reps_max'    => $ex['reps_max'] ?? null,
-                'warmup_sets' => $ex['warmup_sets'] ?? 0,
-                'warmup_reps' => $ex['warmup_reps'] ?? null,
+                'sets'           => $ex['sets'],
+                'reps'           => $ex['reps'],
+                'reps_max'       => $ex['reps_max'] ?? null,
+                'warmup_sets'    => $ex['warmup_sets'] ?? 0,
+                'warmup_reps'    => $ex['warmup_reps'] ?? null,
+                'sort_order'     => $index,
+                'superset_group' => $ex['superset_group'] ?? null,
             ]);
         }
 
@@ -112,18 +115,21 @@ class RoutineController extends Controller
             'exercises.*.reps_max' => 'nullable|integer',
             'exercises.*.warmup_sets' => 'nullable|integer',
             'exercises.*.warmup_reps' => 'nullable|string|max:20',
+            'exercises.*.superset_group' => 'nullable|integer',
         ]);
 
         $routine->update(['name' => $request->name]);
 
         $syncData = [];
-        foreach ($request->exercises as $ex) {
+        foreach ($request->exercises as $index => $ex) {
             $syncData[$ex['exercise_id']] = [
-                'sets'        => $ex['sets'],
-                'reps'        => $ex['reps'],
-                'reps_max'    => $ex['reps_max'] ?? null,
-                'warmup_sets' => $ex['warmup_sets'] ?? 0,
-                'warmup_reps' => $ex['warmup_reps'] ?? null,
+                'sets'           => $ex['sets'],
+                'reps'           => $ex['reps'],
+                'reps_max'       => $ex['reps_max'] ?? null,
+                'warmup_sets'    => $ex['warmup_sets'] ?? 0,
+                'warmup_reps'    => $ex['warmup_reps'] ?? null,
+                'sort_order'     => $index,
+                'superset_group' => $ex['superset_group'] ?? null,
             ];
         }
         $routine->exercises()->sync($syncData);
