@@ -24,6 +24,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::put('/password', [AuthController::class, 'changePassword']);
     Route::delete('/account', [AuthController::class, 'deleteAccount']);
     
     Route::get('/profile', [ProfileController::class, 'show']);
@@ -37,10 +38,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/exercises/{exercise}', [ExerciseController::class, 'update']);
 
     Route::get('/routines', [RoutineController::class, 'index']);
+    Route::get('/routines/archived', [RoutineController::class, 'archived']);
     Route::post('/routines', [RoutineController::class, 'store']);
     Route::put('/routines/{routine}', [RoutineController::class, 'update']);
     Route::delete('/routines/{routine}', [RoutineController::class, 'destroy']);
     Route::post('/routines/{routine}/complete', [RoutineController::class, 'complete']);
+    Route::post('/routines/{routine}/archive', [RoutineController::class, 'archive']);
+    Route::post('/routines/{routine}/unarchive', [RoutineController::class, 'unarchive']);
     Route::get('/workouts/history', [RoutineController::class, 'workoutHistory']);
     Route::get('/workouts/weekly-progress', [RoutineController::class, 'weeklyProgress']);
 
