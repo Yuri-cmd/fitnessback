@@ -17,6 +17,9 @@ class UserProfile extends Model
     ];
 
     protected $casts = [
+        'height' => 'float',
+        'current_weight' => 'float',
+        'goal_weight' => 'float',
         'birth_date' => 'date',
     ];
 

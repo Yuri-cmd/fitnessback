@@ -9,6 +9,7 @@ class WeightLog extends Model
     protected $fillable = ['user_id', 'weight', 'logged_at'];
 
     protected $casts = [
+        'weight' => 'float',
         'logged_at' => 'datetime',
     ];
 
