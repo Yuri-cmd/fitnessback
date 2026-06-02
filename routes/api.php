@@ -90,5 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/volume-by-muscle', [StatsController::class, 'volumeByMuscle']);
         Route::get('/activity-heatmap', [StatsController::class, 'activityHeatmap']);
         Route::get('/personal-records', [StatsController::class, 'personalRecords']);
+        Route::get('/progress-by-exercise', [StatsController::class, 'progressByExercise']);
+        Route::get('/progress-by-routine', [StatsController::class, 'progressByRoutine']);
     });
 });
