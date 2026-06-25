@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/weight-logs', [WeightController::class, 'store']);
     
     Route::get('/exercises', [ExerciseController::class, 'index']);
+    Route::get('/exercises/last-weights', [ExerciseController::class, 'lastWeights']);
     Route::post('/exercises', [ExerciseController::class, 'store']);
     Route::put('/exercises/{exercise}', [ExerciseController::class, 'update']);
 

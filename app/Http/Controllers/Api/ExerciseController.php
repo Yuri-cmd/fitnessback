@@ -36,4 +36,20 @@ class ExerciseController extends Controller
 
         return response()->json($exercise);
     }
+
+    public function lastWeights(Request $request)
+    {
+        $ids = array_filter((array) $request->query('ids', []), 'is_numeric');
+        if (empty($ids)) return response()->json((object) []);
+
+        $weights = \App\Models\WorkoutSetLog::where('user_id', $request->user()->id)
+            ->whereIn('exercise_id', $ids)
+            ->where('weight_kg', '>', 0)
+            ->orderByDesc('logged_at')
+            ->get(['exercise_id', 'weight_kg'])
+            ->unique('exercise_id')
+            ->mapWithKeys(fn($log) => [(string) $log->exercise_id => (float) $log->weight_kg]);
+
+        return response()->json($weights);
+    }
 }

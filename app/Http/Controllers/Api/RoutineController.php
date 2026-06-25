@@ -49,6 +49,7 @@ class RoutineController extends Controller
             'exercises.*.warmup_sets' => 'nullable|integer',
             'exercises.*.warmup_reps' => 'nullable|string|max:20',
             'exercises.*.superset_group' => 'nullable|integer',
+            'exercises.*.rest_seconds'   => 'nullable|integer|min:5|max:600',
         ]);
 
         $routine = $request->user()->routines()->create([
@@ -64,6 +65,7 @@ class RoutineController extends Controller
                 'warmup_reps'    => $ex['warmup_reps'] ?? null,
                 'sort_order'     => $index,
                 'superset_group' => $ex['superset_group'] ?? null,
+                'rest_seconds'   => $ex['rest_seconds'] ?? 90,
             ]);
         }
 
@@ -116,6 +118,7 @@ class RoutineController extends Controller
             'exercises.*.warmup_sets' => 'nullable|integer',
             'exercises.*.warmup_reps' => 'nullable|string|max:20',
             'exercises.*.superset_group' => 'nullable|integer',
+            'exercises.*.rest_seconds'   => 'nullable|integer|min:5|max:600',
         ]);
 
         $routine->update(['name' => $request->name]);
@@ -130,6 +133,7 @@ class RoutineController extends Controller
                 'warmup_reps'    => $ex['warmup_reps'] ?? null,
                 'sort_order'     => $index,
                 'superset_group' => $ex['superset_group'] ?? null,
+                'rest_seconds'   => $ex['rest_seconds'] ?? 90,
             ];
         }
         $routine->exercises()->sync($syncData);
